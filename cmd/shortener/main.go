@@ -6,8 +6,6 @@ import (
 	"net/http"
 )
 
-//iter4
-
 func main() {
 	cfg := config.Config()
 
