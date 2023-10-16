@@ -7,13 +7,13 @@ import (
 )
 
 type Cfg struct {
-	Address netAddress.NetAddress
+	Address netaddress.NetAddress
 	BaseURL string
 }
 
 func Config() *Cfg {
 	//data := storage.New()
-	address := netAddress.NewNetAddress()
+	address := netaddress.NewNetAddress()
 	baseURL := ""
 
 	flag.Var(address, "a", "http server adress")
