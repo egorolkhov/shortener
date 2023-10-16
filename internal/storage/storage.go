@@ -6,7 +6,7 @@ import (
 )
 
 type Data struct {
-	sync.RWMutex
+	mu   sync.RWMutex
 	Urls map[string]string
 }
 
@@ -14,15 +14,16 @@ func New() *Data {
 	return &Data{sync.RWMutex{}, make(map[string]string)}
 }
 
-func (u *Data) Add(short, fullurl string) {
-	u.Lock()
-	defer u.Unlock()
-	u.Urls[short] = fullurl
+func (u *Data) Add(short, fullURL string) error {
+	u.mu.Lock()
+	defer u.mu.Unlock()
+	u.Urls[short] = fullURL
+	return nil
 }
 
 func (u *Data) Get(short string) (string, error) {
-	u.Lock()
-	defer u.Unlock()
+	u.mu.RLock()
+	defer u.mu.RUnlock()
 	_, ok := u.Urls[short]
 	if !ok {
 		return "", errors.New("no such id")

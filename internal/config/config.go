@@ -2,21 +2,19 @@ package config
 
 import (
 	"flag"
-	"fmt"
-	"github.com/egorolkhov/shortener/internal/storage"
+	"github.com/egorolkhov/shortener/internal/config/netAddress"
 	"os"
 )
 
 type Cfg struct {
-	Address NetAddress
+	Address netAddress.NetAddress
 	BaseURL string
-	Data    *storage.Data
 }
 
 func Config() *Cfg {
-	data := storage.New()
-	address := NewNetAddress()
-	baseURL := NewBaseURL()
+	//data := storage.New()
+	address := netAddress.NewNetAddress()
+	baseURL := ""
 
 	flag.Var(address, "a", "http server adress")
 	url := flag.String("b", baseURL, "base url address")
@@ -27,10 +25,7 @@ func Config() *Cfg {
 	if ok {
 		url = &setURL
 	}
-	err := address.Set(os.Getenv("SERVER_ADDRESS"))
-	if err != nil {
-		fmt.Println("wrong address format")
-	}
+	_ = address.Set(os.Getenv("SERVER_ADDRESS"))
 
-	return &Cfg{Address: *address, BaseURL: *url, Data: data}
+	return &Cfg{Address: *address, BaseURL: *url}
 }

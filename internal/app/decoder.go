@@ -6,10 +6,6 @@ import (
 )
 
 func (a *App) DecodeURL(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "path doesn`t exist", http.StatusNotFound)
-		return
-	}
 	vars := mux.Vars(r)
 	id := vars["id"]
 	url, err := a.Storage.Get(id)
