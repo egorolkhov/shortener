@@ -6,9 +6,7 @@ import (
 )
 
 func NewRouter(cfg *config.Cfg) *mux.Router {
-	var app Handler
-
-	app = New(cfg)
+	app := New(cfg)
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", app.ShortURL).Methods("POST")

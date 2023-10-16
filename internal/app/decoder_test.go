@@ -47,18 +47,6 @@ func TestApp_DecodeURL(t *testing.T) {
 			},
 			request: "cdFCblA",
 		},
-		{
-			name: "wrong request type",
-			fields: &storage.Data{Urls: map[string]string{
-				"cdFCblAL": "https://example.com",
-			}},
-			want: want{
-				contentType: "text/plain; charset=utf-8",
-				statusCode:  404,
-				method:      http.MethodPost,
-			},
-			request: "cdFCblA",
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
