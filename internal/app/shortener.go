@@ -35,5 +35,6 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 	//resp := a.BaseURL + "/" + code
 
 	w.Write([]byte(resp))
-	//fmt.Println(a.Storage)
+
+	log.Println(a.Storage.Urls)
 }
