@@ -32,7 +32,7 @@ func (a *App) ShortAPI(w http.ResponseWriter, r *http.Request) {
 
 	code := encoder.Code()
 
-	a.Storage.Add(code, url.Url)
+	a.Storage.Add(code, url.URL)
 
 	var resp ResponseData
 	if a.BaseURL != "" {
