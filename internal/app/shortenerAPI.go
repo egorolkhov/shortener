@@ -28,7 +28,7 @@ func (a *App) ShortAPI(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close() //закрывать все тела запроса
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
+	w.WriteHeader(201)
 
 	code := encoder.Code()
 
