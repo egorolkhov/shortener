@@ -13,7 +13,7 @@ type ResponseData struct {
 }
 
 type RequestData struct {
-	Url string `json:"url"`
+	URL string `json:"url"`
 }
 
 func (a *App) ShortAPI(w http.ResponseWriter, r *http.Request) {
