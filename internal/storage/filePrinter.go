@@ -5,16 +5,16 @@ import (
 	"os"
 )
 
-var Uuid int
+var UUID int
 
-type FileJson struct {
-	Uuid         int    `json:"uuid"`
-	Short_url    string `json:"short_url"`
-	Original_url string `json:"original_url"`
+type FileJSON struct {
+	UUID        int    `json:"uuid"`
+	ShortURL    string `json:"short_url"`
+	OriginalURL string `json:"original_url"`
 }
 
 func FileWrite(k, v string, filepath string) error {
-	Uuid += 1
+	UUID += 1
 	if filepath == "" {
 		return nil
 	}
@@ -24,8 +24,8 @@ func FileWrite(k, v string, filepath string) error {
 	}
 	defer file.Close()
 
-	fileJson := FileJson{Uuid, k, v}
-	line, err := json.Marshal(fileJson)
+	fileJSON := FileJSON{UUID, k, v}
+	line, err := json.Marshal(fileJSON)
 	if err != nil {
 		return err
 	}

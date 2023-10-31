@@ -19,11 +19,11 @@ func GetStorage(data *Data, filepath string) error {
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
-		Uuid += 1
-		fl := FileJson{}
+		UUID += 1
+		fl := FileJSON{}
 		line := scanner.Bytes()
 		json.Unmarshal(line, &fl)
-		data.Add(fl.Short_url, fl.Original_url)
+		data.Add(fl.ShortURL, fl.OriginalURL)
 	}
 	if err = scanner.Err(); err != nil {
 		return err
