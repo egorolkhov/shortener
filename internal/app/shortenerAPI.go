@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/egorolkhov/shortener/internal/app/encoder"
+	"github.com/egorolkhov/shortener/internal/storage"
 	"log"
 	"net/http"
 )
@@ -46,6 +47,9 @@ func (a *App) ShortAPI(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	storage.FileWrite(code, url.URL, a.Filepath)
+
 	w.Write(result)
 
 	log.Println(a.Storage.Urls)

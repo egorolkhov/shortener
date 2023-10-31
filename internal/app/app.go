@@ -3,12 +3,14 @@ package app
 import (
 	"github.com/egorolkhov/shortener/internal/config"
 	storage "github.com/egorolkhov/shortener/internal/storage"
+	"log"
 	"net/http"
 )
 
 type App struct {
-	Storage *storage.Data
-	BaseURL string
+	Storage  *storage.Data
+	BaseURL  string
+	Filepath string
 }
 
 type Handler interface {
@@ -17,5 +19,13 @@ type Handler interface {
 }
 
 func New(cfg *config.Cfg) *App {
-	return &App{storage.New(), cfg.BaseURL}
+	Storage := storage.New()
+	err := storage.GetStorage(Storage, cfg.Filepath)
+	if err != nil {
+		log.Println(err)
+	}
+	return &App{
+		Storage,
+		cfg.BaseURL,
+		cfg.Filepath}
 }

@@ -14,6 +14,6 @@ func NewRouter(cfg *config.Cfg) *mux.Router {
 
 	router.HandleFunc("/", middleware.Middleware(logger.PostLogger(app.ShortURL))).Methods("POST")
 	router.HandleFunc("/{id}", middleware.Middleware(logger.GetLogger(app.DecodeURL))).Methods("GET")
-	router.HandleFunc("/api/shorten", middleware.Middleware(logger.PostLogger(app.ShortAPI)))
+	router.HandleFunc("/api/shorten", middleware.Middleware(logger.PostLogger(app.ShortAPI))).Methods("POST")
 	return router
 }
