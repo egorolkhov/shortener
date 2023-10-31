@@ -18,7 +18,7 @@ func FileWrite(k, v string, filepath string) error {
 	if filepath == "" {
 		return nil
 	}
-	file, err := os.OpenFile(filepath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 644)
+	file, err := os.OpenFile(filepath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		return err
 	}

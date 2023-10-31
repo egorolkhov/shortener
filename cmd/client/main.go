@@ -25,7 +25,7 @@ func main() {
 	}
 	long = strings.TrimSuffix(long, "\n")
 	// заполняем контейнер данными
-	data.Set("url", long)
+	data.Set("", long)
 	// добавляем HTTP-клиент
 	client := &http.Client{}
 	// пишем запрос
