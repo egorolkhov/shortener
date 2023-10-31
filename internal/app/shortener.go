@@ -16,14 +16,14 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	url := string(responseData)[4:]
+	url := string(responseData)
 
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(201)
 
 	code := encoder.Code()
 
-	a.Storage.Add(code, url)
+	a.Storage.Add(code, url[4:])
 
 	fmt.Println(a.BaseURL)
 	var resp string
@@ -33,7 +33,7 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 		resp = "http://" + r.Host + "/" + a.BaseURL + code
 	}
 
-	err = storage.FileWrite(code, url, a.Filepath)
+	err = storage.FileWrite(code, url[4:], a.Filepath)
 	if err != nil {
 		log.Println(err)
 	}
