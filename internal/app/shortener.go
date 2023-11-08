@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"github.com/egorolkhov/shortener/internal/app/encoder"
+	"github.com/egorolkhov/shortener/internal/storage"
 	"io"
 	"log"
 	"net/http"
@@ -31,9 +32,13 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 	} else {
 		resp = "http://" + r.Host + "/" + a.BaseURL + code
 	}
-	//resp := "http://" + r.Host + "/" + a.BaseURL + code
-	//resp := a.BaseURL + "/" + code
+
+	err = storage.FileWrite(code, url, a.Filepath)
+	if err != nil {
+		log.Println(err)
+	}
 
 	w.Write([]byte(resp))
-	//fmt.Println(a.Storage)
+
+	log.Println(a.Storage.Urls)
 }

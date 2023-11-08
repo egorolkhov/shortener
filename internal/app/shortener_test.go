@@ -35,7 +35,7 @@ func TestApp_ShortURL(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := &App{tt.fields, ""}
+			a := &App{tt.fields, "", ""}
 
 			request := httptest.NewRequest(tt.want.method, "/", nil)
 
