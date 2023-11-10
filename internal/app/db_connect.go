@@ -13,10 +13,16 @@ func (a *App) PSQLconnection(w http.ResponseWriter, r *http.Request) {
 
 	db, err := sql.Open("pgx", psqlInfo)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
+
+	err = db.Ping()
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 }
