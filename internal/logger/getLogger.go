@@ -20,5 +20,5 @@ func GetLogger(h http.HandlerFunc) http.HandlerFunc {
 			)
 		}
 	}
-	return Foo
+	return foo
 }

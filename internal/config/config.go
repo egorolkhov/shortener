@@ -22,7 +22,7 @@ func Config() *Cfg {
 	flag.Var(address, "a", "http server adress")
 	url := flag.String("b", baseURL, "base url address")
 	filepath := flag.String("f", "./tmp/short-url-db.json", "db filepath")
-	flag.Var(databaseDSN, "-d", "db address")
+	flag.Var(databaseDSN, "d", "db address")
 	flag.Parse()
 
 	setURL, ok := os.LookupEnv("BASE_URL")
