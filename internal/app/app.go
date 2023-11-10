@@ -2,15 +2,17 @@ package app
 
 import (
 	"github.com/egorolkhov/shortener/internal/config"
+	"github.com/egorolkhov/shortener/internal/config/postgreSQLaddress"
 	storage "github.com/egorolkhov/shortener/internal/storage"
 	"log"
 	"net/http"
 )
 
 type App struct {
-	Storage  *storage.Data
-	BaseURL  string
-	Filepath string
+	Storage     *storage.Data
+	BaseURL     string
+	Filepath    string
+	DatabaseDSN postgreSQLaddress.PGXaddress
 }
 
 type Handler interface {
@@ -27,5 +29,6 @@ func New(cfg *config.Cfg) *App {
 	return &App{
 		Storage,
 		cfg.BaseURL,
-		cfg.Filepath}
+		cfg.Filepath,
+		cfg.DatabaseDSN}
 }
