@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/egorolkhov/shortener/internal/config"
-	"github.com/egorolkhov/shortener/internal/config/postgreSQLaddress"
+	"github.com/egorolkhov/shortener/internal/config/postgresqladdress"
 	storage "github.com/egorolkhov/shortener/internal/storage"
 	"log"
 	"net/http"
@@ -12,7 +12,7 @@ type App struct {
 	Storage     *storage.Data
 	BaseURL     string
 	Filepath    string
-	DatabaseDSN postgreSQLaddress.PGXaddress
+	DatabaseDSN postgresqladdress.PGXaddress
 }
 
 type Handler interface {
