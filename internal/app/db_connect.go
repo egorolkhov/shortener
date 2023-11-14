@@ -8,12 +8,9 @@ import (
 )
 
 func (a *App) PSQLconnection(w http.ResponseWriter, r *http.Request) {
-	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
-		a.DatabaseDSN.Host, a.DatabaseDSN.Port, a.DatabaseDSN.User, a.DatabaseDSN.Password, a.DatabaseDSN.DBname, a.DatabaseDSN.SSLmode)
+	fmt.Println(a.DatabaseDSN)
 
-	fmt.Println(a.DatabaseDSN.Host, a.DatabaseDSN.Port, a.DatabaseDSN.User, a.DatabaseDSN.Password, a.DatabaseDSN.DBname, a.DatabaseDSN.SSLmode)
-
-	db, err := sql.Open("pgx", psqlInfo)
+	db, err := sql.Open("pgx", a.DatabaseDSN)
 	if err != nil {
 		fmt.Println(err)
 		return

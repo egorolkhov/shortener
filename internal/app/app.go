@@ -8,10 +8,11 @@ import (
 )
 
 type App struct {
-	Storage     *storage.Data
-	BaseURL     string
-	Filepath    string
-	DatabaseDSN config.PGXaddress
+	Storage  *storage.Data
+	BaseURL  string
+	Filepath string
+	//DatabaseDSN config.PGXaddress
+	DatabaseDSN string
 }
 
 type Handler interface {

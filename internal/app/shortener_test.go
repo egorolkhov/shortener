@@ -1,7 +1,6 @@
 package app
 
 import (
-	"github.com/egorolkhov/shortener/internal/config"
 	"github.com/egorolkhov/shortener/internal/storage"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -36,7 +35,7 @@ func TestApp_ShortURL(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := &App{tt.fields, "", "", config.PGXaddress{}}
+			a := &App{tt.fields, "", "", ""}
 
 			request := httptest.NewRequest(tt.want.method, "/", nil)
 

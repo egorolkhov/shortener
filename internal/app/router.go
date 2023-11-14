@@ -12,8 +12,8 @@ func NewRouter(cfg *config.Cfg) *mux.Router {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", middleware.Middleware(logger.PostLogger(app.ShortURL))).Methods("POST")
 	router.HandleFunc("/ping", middleware.Middleware(logger.GetLogger(app.PSQLconnection))).Methods("GET")
+	router.HandleFunc("/", middleware.Middleware(logger.PostLogger(app.ShortURL))).Methods("POST")
 	router.HandleFunc("/{id}", middleware.Middleware(logger.GetLogger(app.DecodeURL))).Methods("GET")
 	router.HandleFunc("/api/shorten", middleware.Middleware(logger.PostLogger(app.ShortAPI))).Methods("POST")
 	return router

@@ -9,21 +9,23 @@ import (
 )
 
 type Cfg struct {
-	Address     netAddress.NetAddress
-	BaseURL     string
-	Filepath    string
-	DatabaseDSN PGXaddress
+	Address  netAddress.NetAddress
+	BaseURL  string
+	Filepath string
+	//DatabaseDSN PGXaddress
+	DatabaseDSN string
 }
 
 func Config() *Cfg {
 	address := netAddress.NewNetAddress()
-	databaseDSN := NewPGXaddress()
+	//databaseDSN := NewPGXaddress()
 	baseURL := ""
 
 	flag.Var(address, "a", "http server adress")
 	url := flag.String("b", baseURL, "base url address")
 	filepath := flag.String("f", "./tmp/short-url-db.json", "db filepath")
-	flag.Var(databaseDSN, "d", "db address")
+	//flag.Var(databaseDSN, "d", "db address")
+	databaseDSN := flag.String("d", "host=localhost port=5432 user=shortener password=Qazxsw2200 dbname=shortener sslmode=disable", "db address")
 	flag.Parse()
 
 	setURL, ok := os.LookupEnv("BASE_URL")
@@ -36,7 +38,7 @@ func Config() *Cfg {
 	}
 
 	_ = address.Set(os.Getenv("SERVER_ADDRESS"))
-	_ = databaseDSN.Set(os.Getenv("DATABASE_DSN"))
+	//_ = databaseDSN.Set(os.Getenv("DATABASE_DSN"))
 
 	return &Cfg{Address: *address, BaseURL: *url, Filepath: *filepath, DatabaseDSN: *databaseDSN}
 }
