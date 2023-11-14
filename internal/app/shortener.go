@@ -24,7 +24,9 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 	code := encoder.Code()
 
 	a.Storage.Add(code, url)
-	err = storage.AddDB(r.Context(), a.DatabaseDSN, code, url)
+	if a.flag == 1 {
+		err = storage.AddDB(r.Context(), a.DatabaseDSN, code, url)
+	}
 	if err != nil {
 		log.Println(err)
 	}

@@ -13,6 +13,7 @@ type App struct {
 	Filepath string
 	//DatabaseDSN config.PGXaddress
 	DatabaseDSN string
+	flag        int
 }
 
 type Handler interface {
@@ -21,15 +22,22 @@ type Handler interface {
 }
 
 func New(cfg *config.Cfg) *App {
-	Storage := storage.New()
-	err := storage.GetStorage(Storage, cfg.Filepath)
-	if err != nil {
-		log.Println(err)
+	var flag int
+
+	if cfg.DatabaseDSN != "" {
+		err := storage.CreateTable(cfg.DatabaseDSN)
+		if err != nil {
+			log.Println(err)
+		}
+		flag = 1
 	}
 
-	err = storage.CreateTable(cfg.DatabaseDSN)
-	if err != nil {
-		log.Println(err)
+	Storage := storage.New()
+	if cfg.Filepath != "" && flag != 1 {
+		err := storage.GetStorage(Storage, cfg.Filepath)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 
 	return &App{

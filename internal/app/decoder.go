@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/egorolkhov/shortener/internal/storage"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -10,7 +11,10 @@ func (a *App) DecodeURL(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	url, err := a.Storage.Get(id)
-	//url, err := storage.GetDB(r.Context(), a.DatabaseDSN, id)
+	if a.flag == 1 {
+		url, err = storage.GetDB(r.Context(), a.DatabaseDSN, id)
+	}
+	//url, err = storage.GetDB(r.Context(), a.DatabaseDSN, id)
 	if err != nil {
 		log.Println(err)
 	}
