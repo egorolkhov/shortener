@@ -12,9 +12,6 @@ type URL struct {
 }
 
 func CreateTable(DatabaseDSN string) error {
-	//psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
-	//	DatabaseDSN.Host, DatabaseDSN.Port, DatabaseDSN.User, DatabaseDSN.Password, DatabaseDSN.DBname, DatabaseDSN.SSLmode)
-
 	db, err := sql.Open("pgx", DatabaseDSN)
 	if err != nil {
 		log.Println(err)
