@@ -1,4 +1,4 @@
-package postgreSQLaddress
+package postgresqladdress
 
 import (
 	"errors"
@@ -34,7 +34,7 @@ func (n *PGXaddress) String() string {
 
 func (n *PGXaddress) Set(flagValue string) error {
 	res := strings.Split(flagValue, ":")
-	if len(res) != 5 {
+	if len(res) != 6 {
 		return errors.New("wrong address")
 	}
 	n.Host = res[0]
@@ -50,8 +50,8 @@ func NewPGXaddress() *PGXaddress {
 	return &PGXaddress{
 		Host:     "localhost",
 		Port:     "5432",
-		User:     "egoro",
-		Password: "qazxsw",
+		User:     "shortener",
+		Password: "Qazxsw2200",
 		DBname:   "shortener",
 		SSLmode:  "disable",
 	}

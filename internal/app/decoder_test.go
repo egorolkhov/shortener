@@ -51,7 +51,7 @@ func TestApp_DecodeURL(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := &App{tt.fields, "", "", postgreSQLaddress.PGXaddress{}}
+			a := &App{tt.fields, "", "", postgresqladdress.PGXaddress{}}
 
 			request := httptest.NewRequest(tt.want.method, "/"+tt.request, nil)
 

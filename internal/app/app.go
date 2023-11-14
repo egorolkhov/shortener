@@ -26,6 +26,12 @@ func New(cfg *config.Cfg) *App {
 	if err != nil {
 		log.Println(err)
 	}
+
+	err = storage.CreateTable(cfg.DatabaseDSN)
+	if err != nil {
+		log.Println(err)
+	}
+
 	return &App{
 		Storage,
 		cfg.BaseURL,

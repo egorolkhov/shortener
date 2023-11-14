@@ -14,7 +14,7 @@ func main() {
 	endpoint := "http://localhost:8080/"
 	// контейнер данных для запроса
 	data := url.Values{}
-	// приглашение в консоли
+	// приглашение в консолиdksjds
 	fmt.Println("Введите длинный URL")
 	// открываем потоковое чтение из консоли
 	reader := bufio.NewReader(os.Stdin)
