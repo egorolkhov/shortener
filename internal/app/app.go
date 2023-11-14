@@ -44,5 +44,6 @@ func New(cfg *config.Cfg) *App {
 		Storage,
 		cfg.BaseURL,
 		cfg.Filepath,
-		cfg.DatabaseDSN}
+		cfg.DatabaseDSN,
+		flag}
 }
