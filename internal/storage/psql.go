@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/egorolkhov/shortener/internal/config"
+	"github.com/egorolkhov/shortener/internal/config/postgresqladdress"
 	"log"
 )
 
@@ -13,7 +13,7 @@ type URL struct {
 	shortURL string
 }
 
-func CreateTable(DatabaseDSN config.PGXaddress) error {
+func CreateTable(DatabaseDSN postgresqladdress.PGXaddress) error {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		DatabaseDSN.Host, DatabaseDSN.Port, DatabaseDSN.User, DatabaseDSN.Password, DatabaseDSN.DBname, DatabaseDSN.SSLmode)
 
@@ -38,7 +38,7 @@ func CreateTable(DatabaseDSN config.PGXaddress) error {
 	return nil
 }
 
-func AddDB(ctx context.Context, DatabaseDSN config.PGXaddress, code, url string) error {
+func AddDB(ctx context.Context, DatabaseDSN postgresqladdress.PGXaddress, code, url string) error {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		DatabaseDSN.Host, DatabaseDSN.Port, DatabaseDSN.User, DatabaseDSN.Password, DatabaseDSN.DBname, DatabaseDSN.SSLmode)
 
@@ -57,7 +57,7 @@ func AddDB(ctx context.Context, DatabaseDSN config.PGXaddress, code, url string)
 	return nil
 }
 
-func GetDB(ctx context.Context, DatabaseDSN config.PGXaddress, short string) (string, error) {
+func GetDB(ctx context.Context, DatabaseDSN postgresqladdress.PGXaddress, short string) (string, error) {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		DatabaseDSN.Host, DatabaseDSN.Port, DatabaseDSN.User, DatabaseDSN.Password, DatabaseDSN.DBname, DatabaseDSN.SSLmode)
 
