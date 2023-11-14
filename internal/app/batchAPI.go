@@ -56,6 +56,8 @@ func (a *App) BatchAPI(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
 	w.Write(result)
 
 	log.Println(a.Storage.Urls)
