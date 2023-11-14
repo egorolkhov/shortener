@@ -2,20 +2,20 @@ package config
 
 import (
 	"flag"
-	"github.com/egorolkhov/shortener/internal/config/netaddress"
+	"github.com/egorolkhov/shortener/internal/config/netAddress"
 	"github.com/egorolkhov/shortener/internal/config/postgresqladdress"
 	"os"
 )
 
 type Cfg struct {
-	Address     netaddress.NetAddress
+	Address     netAddress.NetAddress
 	BaseURL     string
 	Filepath    string
 	DatabaseDSN postgresqladdress.PGXaddress
 }
 
 func Config() *Cfg {
-	address := netaddress.NewNetAddress()
+	address := netAddress.NewNetAddress()
 	databaseDSN := postgresqladdress.NewPGXaddress()
 	baseURL := ""
 
