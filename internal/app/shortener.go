@@ -22,6 +22,8 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 
 	code := encoder.Code()
 
+	w.Header().Set("Content-Type", "text/plain")
+
 	if a.flag == 1 {
 		err = storage.AddDB(r.Context(), a.DatabaseDSN, code, url)
 		if errors.Is(err, storage.ErrURLAlreadyExist) {
@@ -60,7 +62,6 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	w.Header().Set("Content-Type", "text/plain")
 	if temp != 1 {
 		w.WriteHeader(http.StatusCreated)
 	}

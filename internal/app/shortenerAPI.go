@@ -32,6 +32,8 @@ func (a *App) ShortAPI(w http.ResponseWriter, r *http.Request) {
 
 	code := encoder.Code()
 
+	w.Header().Set("Content-Type", "application/json")
+
 	if a.flag == 1 {
 		err = storage.AddDB(r.Context(), a.DatabaseDSN, code, url.URL)
 		if errors.Is(err, storage.ErrURLAlreadyExist) {
@@ -72,7 +74,6 @@ func (a *App) ShortAPI(w http.ResponseWriter, r *http.Request) {
 
 	storage.FileWrite(code, url.URL, a.Filepath)
 
-	w.Header().Set("Content-Type", "application/json")
 	if temp != 1 {
 		w.WriteHeader(http.StatusCreated)
 	}
