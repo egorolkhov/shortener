@@ -2,19 +2,19 @@ package config
 
 import (
 	"flag"
-	"github.com/egorolkhov/shortener/internal/config/netaddress"
+	"github.com/egorolkhov/shortener/internal/config/netAddress"
 	"os"
 )
 
 type Cfg struct {
-	Address     netaddress.NetAddress
+	Address     netAddress.NetAddress
 	BaseURL     string
 	Filepath    string
 	DatabaseDSN string
 }
 
 func Config() *Cfg {
-	address := netaddress.NewNetAddress()
+	address := netAddress.NewNetAddress()
 	baseURL := ""
 
 	flag.Var(address, "a", "http server adress")
