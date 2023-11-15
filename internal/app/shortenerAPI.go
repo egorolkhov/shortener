@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/egorolkhov/shortener/internal/app/encoder"
 	"github.com/egorolkhov/shortener/internal/storage"
@@ -29,11 +30,25 @@ func (a *App) ShortAPI(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close() //закрывать все тела запроса
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
+	w.WriteHeader(http.StatusCreated)
 
 	code := encoder.Code()
 
-	a.Storage.Add(code, url.URL)
+	if a.flag == 1 {
+		err = storage.AddDB(r.Context(), a.DatabaseDSN, code, url.URL)
+		if errors.Is(err, storage.ErrURLAlreadyExist) {
+			w.WriteHeader(http.StatusConflict)
+			code, err = storage.GetDBExist(r.Context(), a.DatabaseDSN, url.URL)
+			if err != nil {
+				log.Println(err)
+			}
+		}
+	} else {
+		a.Storage.Add(code, url.URL)
+	}
+	if err != nil {
+		log.Println(err)
+	}
 
 	var resp ResponseData
 	if a.BaseURL != "" {

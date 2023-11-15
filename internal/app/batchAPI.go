@@ -40,7 +40,9 @@ func (a *App) BatchAPI(w http.ResponseWriter, r *http.Request) {
 		} else {
 			shortURL = "http://" + r.Host + "/" + a.BaseURL + codes[i]
 		}
-		resp = append(resp, storage.ResponseBatch{jsons[i].CorrelationID, shortURL})
+		resp = append(resp, storage.ResponseBatch{
+			CorrelationID: jsons[i].CorrelationID,
+			ShortURL:      shortURL})
 	}
 
 	result, err := json.Marshal(resp)
@@ -57,7 +59,7 @@ func (a *App) BatchAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
+	w.WriteHeader(http.StatusCreated)
 	w.Write(result)
 
 	log.Println(a.Storage.Urls)

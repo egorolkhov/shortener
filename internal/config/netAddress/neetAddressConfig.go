@@ -1,4 +1,4 @@
-package netAddress
+package netaddress
 
 import (
 	"errors"

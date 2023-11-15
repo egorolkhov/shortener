@@ -1,6 +1,7 @@
 package app
 
 import (
+	"errors"
 	"fmt"
 	"github.com/egorolkhov/shortener/internal/app/encoder"
 	"github.com/egorolkhov/shortener/internal/storage"
@@ -25,6 +26,13 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 
 	if a.flag == 1 {
 		err = storage.AddDB(r.Context(), a.DatabaseDSN, code, url)
+		if errors.Is(err, storage.ErrURLAlreadyExist) {
+			w.WriteHeader(http.StatusConflict)
+			code, err = storage.GetDBExist(r.Context(), a.DatabaseDSN, url)
+			if err != nil {
+				log.Println(err)
+			}
+		}
 	} else {
 		a.Storage.Add(code, url)
 	}
