@@ -19,6 +19,7 @@ type RequestData struct {
 }
 
 func (a *App) ShortAPI(w http.ResponseWriter, r *http.Request) {
+	var temp int
 	var url RequestData
 
 	err := json.NewDecoder(r.Body).Decode(&url)
@@ -29,14 +30,12 @@ func (a *App) ShortAPI(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close() //закрывать все тела запроса
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-
 	code := encoder.Code()
 
 	if a.flag == 1 {
 		err = storage.AddDB(r.Context(), a.DatabaseDSN, code, url.URL)
 		if errors.Is(err, storage.ErrURLAlreadyExist) {
+			temp = 1
 			w.WriteHeader(http.StatusConflict)
 			code, err = storage.GetDBExist(r.Context(), a.DatabaseDSN, url.URL)
 			if err != nil {
@@ -46,6 +45,7 @@ func (a *App) ShortAPI(w http.ResponseWriter, r *http.Request) {
 	} else {
 		err = a.Storage.Add(code, url.URL)
 		if errors.Is(err, storage.ErrURLAlreadyExist) {
+			temp = 1
 			w.WriteHeader(http.StatusConflict)
 			code, err = a.Storage.GetExist(url.URL)
 			if err != nil {
@@ -72,6 +72,10 @@ func (a *App) ShortAPI(w http.ResponseWriter, r *http.Request) {
 
 	storage.FileWrite(code, url.URL, a.Filepath)
 
+	w.Header().Set("Content-Type", "application/json")
+	if temp != 1 {
+		w.WriteHeader(http.StatusCreated)
+	}
 	w.Write(result)
 
 	log.Println(a.Storage.Urls)

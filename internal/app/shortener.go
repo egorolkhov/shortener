@@ -11,6 +11,7 @@ import (
 )
 
 func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
+	var temp int
 	responseData, err := io.ReadAll(r.Body)
 	defer r.Body.Close() //закрывать все тела запроса
 	if err != nil {
@@ -19,14 +20,12 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 
 	url := string(responseData)
 
-	w.Header().Set("Content-Type", "text/plain")
-	w.WriteHeader(http.StatusCreated)
-
 	code := encoder.Code()
 
 	if a.flag == 1 {
 		err = storage.AddDB(r.Context(), a.DatabaseDSN, code, url)
 		if errors.Is(err, storage.ErrURLAlreadyExist) {
+			temp = 1
 			w.WriteHeader(http.StatusConflict)
 			code, err = storage.GetDBExist(r.Context(), a.DatabaseDSN, url)
 			if err != nil {
@@ -36,6 +35,7 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 	} else {
 		err = a.Storage.Add(code, url)
 		if errors.Is(err, storage.ErrURLAlreadyExist) {
+			temp = 1
 			w.WriteHeader(http.StatusConflict)
 			code, err = a.Storage.GetExist(url)
 			if err != nil {
@@ -60,6 +60,10 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
+	w.Header().Set("Content-Type", "text/plain")
+	if temp != 1 {
+		w.WriteHeader(http.StatusCreated)
+	}
 	w.Write([]byte(resp))
 
 	log.Println(a.Storage.Urls)
