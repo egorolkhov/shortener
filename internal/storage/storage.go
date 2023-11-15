@@ -17,6 +17,11 @@ func New() *Data {
 func (u *Data) Add(short, fullURL string) error {
 	u.mu.Lock()
 	defer u.mu.Unlock()
+	for _, v := range u.Urls {
+		if v == fullURL {
+			return ErrURLAlreadyExist
+		}
+	}
 	u.Urls[short] = fullURL
 	return nil
 }
@@ -29,4 +34,15 @@ func (u *Data) Get(short string) (string, error) {
 		return "", errors.New("no such id")
 	}
 	return u.Urls[short], nil
+}
+
+func (u *Data) GetExist(fullURL string) (string, error) {
+	u.mu.RLock()
+	defer u.mu.RUnlock()
+	for k, v := range u.Urls {
+		if v == fullURL {
+			return k, nil
+		}
+	}
+	return "", errors.New("error when getting short url")
 }

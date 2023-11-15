@@ -20,7 +20,7 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 	url := string(responseData)
 
 	w.Header().Set("Content-Type", "text/plain")
-	w.WriteHeader(201)
+	w.WriteHeader(http.StatusCreated)
 
 	code := encoder.Code()
 
@@ -34,7 +34,14 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	} else {
-		a.Storage.Add(code, url)
+		err = a.Storage.Add(code, url)
+		if errors.Is(err, storage.ErrURLAlreadyExist) {
+			w.WriteHeader(http.StatusConflict)
+			code, err = a.Storage.GetExist(url)
+			if err != nil {
+				log.Println(err)
+			}
+		}
 	}
 	if err != nil {
 		log.Println(err)

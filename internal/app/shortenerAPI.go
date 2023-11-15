@@ -44,7 +44,14 @@ func (a *App) ShortAPI(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	} else {
-		a.Storage.Add(code, url.URL)
+		err = a.Storage.Add(code, url.URL)
+		if errors.Is(err, storage.ErrURLAlreadyExist) {
+			w.WriteHeader(http.StatusConflict)
+			code, err = a.Storage.GetExist(url.URL)
+			if err != nil {
+				log.Println(err)
+			}
+		}
 	}
 	if err != nil {
 		log.Println(err)
