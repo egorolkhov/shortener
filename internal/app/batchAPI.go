@@ -62,5 +62,5 @@ func (a *App) BatchAPI(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Write(result)
 
-	log.Println(a.Storage.Urls)
+	//log.Println(a.Storage.Urls)
 }

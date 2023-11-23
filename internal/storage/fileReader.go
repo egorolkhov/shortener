@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func GetStorage(data *Data, filepath string) error {
+func GetStorage(data Storage, filepath string) error {
 	if filepath == "" {
 		return nil
 	}

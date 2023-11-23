@@ -21,8 +21,8 @@ func Config() *Cfg {
 	flag.Var(address, "a", "http server adress")
 	url := flag.String("b", baseURL, "base url address")
 	filepath := flag.String("f", "", "db filepath")
-	//databaseDSN := flag.String("d", "host=localhost port=5432 user=shortener password=Qazxsw2200 dbname=shortener sslmode=disable", "db address")
-	databaseDSN := flag.String("d", "", "db address")
+	databaseDSN := flag.String("d", "host=localhost port=5432 user=shortener password=Qazxsw2200 dbname=shortener sslmode=disable", "db address")
+	//databaseDSN := flag.String("d", "", "db address")
 	flag.Parse()
 
 	setURL, ok := os.LookupEnv("BASE_URL")

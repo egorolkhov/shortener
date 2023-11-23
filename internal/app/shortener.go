@@ -24,29 +24,14 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/plain")
 
-	if a.flag == 1 {
-		err = storage.AddDB(r.Context(), a.DatabaseDSN, code, url)
-		if errors.Is(err, storage.ErrURLAlreadyExist) {
-			temp = 1
-			w.WriteHeader(http.StatusConflict)
-			code, err = storage.GetDBExist(r.Context(), a.DatabaseDSN, url)
-			if err != nil {
-				log.Println(err)
-			}
+	err = a.Storage.Add(code, url)
+	if errors.Is(err, storage.ErrURLAlreadyExist) {
+		temp = 1
+		w.WriteHeader(http.StatusConflict)
+		code, err = a.Storage.GetExist(url)
+		if err != nil {
+			log.Println(err)
 		}
-	} else {
-		err = a.Storage.Add(code, url)
-		if errors.Is(err, storage.ErrURLAlreadyExist) {
-			temp = 1
-			w.WriteHeader(http.StatusConflict)
-			code, err = a.Storage.GetExist(url)
-			if err != nil {
-				log.Println(err)
-			}
-		}
-	}
-	if err != nil {
-		log.Println(err)
 	}
 
 	fmt.Println(a.BaseURL)
@@ -67,5 +52,9 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Write([]byte(resp))
 
-	log.Println(a.Storage.Urls)
+	if storage, ok := a.Storage.(*storage.Data); ok {
+		log.Println(storage.Urls)
+		log.Println(storage.Codes)
+	}
+	//  log.Println(a.Storage.Urls)
 }

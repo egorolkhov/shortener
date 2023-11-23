@@ -8,7 +8,7 @@ import (
 )
 
 type App struct {
-	Storage  *storage.Data
+	Storage  storage.Storage
 	BaseURL  string
 	Filepath string
 	//DatabaseDSN config.PGXaddress
@@ -24,19 +24,20 @@ type Handler interface {
 func New(cfg *config.Cfg) *App {
 	var flag int
 
+	var Storage storage.Storage
 	if cfg.DatabaseDSN != "" {
 		err := storage.CreateTable(cfg.DatabaseDSN)
 		if err != nil {
 			log.Println(err)
 		}
-		flag = 1
-	}
-
-	Storage := storage.New()
-	if cfg.Filepath != "" && flag != 1 {
-		err := storage.GetStorage(Storage, cfg.Filepath)
-		if err != nil {
-			log.Println(err)
+		Storage = storage.NewDB(cfg.DatabaseDSN)
+	} else {
+		Storage = storage.NewLocalData()
+		if cfg.Filepath != "" {
+			err := storage.GetStorage(Storage, cfg.Filepath)
+			if err != nil {
+				log.Println(err)
+			}
 		}
 	}
 
