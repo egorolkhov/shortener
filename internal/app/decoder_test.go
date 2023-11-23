@@ -24,9 +24,9 @@ func TestApp_DecodeURL(t *testing.T) {
 	}{
 		{
 			name: "simple test",
-			fields: &storage.Data{Urls: map[string]string{
-				"cdFCblAL": "https://example.com",
-			}},
+			fields: &storage.Data{
+				Urls:  map[string]string{"https://example.com": "cdFCblAL"},
+				Codes: map[string]string{"cdFCblAL": "https://example.com"}},
 			want: want{
 				contentType: "text/plain",
 				statusCode:  307,
@@ -37,9 +37,9 @@ func TestApp_DecodeURL(t *testing.T) {
 		},
 		{
 			name: "wrong code",
-			fields: &storage.Data{Urls: map[string]string{
-				"cdFCblAL": "https://example.com",
-			}},
+			fields: &storage.Data{
+				Urls:  map[string]string{"https://example.com": "cdFCblAL"},
+				Codes: map[string]string{"cdFCblAL": "https://example.com"}},
 			want: want{
 				contentType: "text/plain; charset=utf-8",
 				statusCode:  400,

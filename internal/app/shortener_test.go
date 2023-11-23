@@ -23,7 +23,7 @@ func TestApp_ShortURL(t *testing.T) {
 	}{
 		{
 			name:   "simple test",
-			fields: &storage.Data{Urls: map[string]string{}},
+			fields: &storage.Data{Urls: map[string]string{}, Codes: map[string]string{}},
 			want: want{
 				contentType: "text/plain",
 				statusCode:  201,
