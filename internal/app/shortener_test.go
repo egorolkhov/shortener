@@ -47,7 +47,7 @@ func TestApp_ShortURL(t *testing.T) {
 
 			assert.Equal(t, tt.want.statusCode, w.Code, "Код ответа не совпадает с ожидаемым")
 			assert.Equal(t, tt.want.contentType, res.Header.Get("Content-Type"), "Тип ответа не совпадает")
-			assert.Equal(t, tt.want.storageSize, len(a.Storage.Urls))
+			assert.Equal(t, tt.want.storageSize, len(a.Storage.(*storage.Data).Urls))
 			defer res.Body.Close()
 		})
 	}
