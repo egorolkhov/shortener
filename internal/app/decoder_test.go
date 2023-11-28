@@ -65,7 +65,7 @@ func TestApp_DecodeURL(t *testing.T) {
 			request = mux.SetURLVars(request, vars)
 
 			//middleware.Middleware(a.DecodeURL)(w, request)
-			w.Header().Set("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDEyMjMzNjEsIlVzZXJJRCI6IjQifQ.eruxblRFIyHVTtUkUQv5jkbJA3funWPDNb8m8zX-3ag")
+			//w.Header().Set("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDEyMjMzNjEsIlVzZXJJRCI6IjQifQ.eruxblRFIyHVTtUkUQv5jkbJA3funWPDNb8m8zX-3ag")
 
 			a.DecodeURL(w, request)
 

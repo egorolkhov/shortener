@@ -169,7 +169,7 @@ func (d *DB) GetUserURLS(userID string) []URL {
 		short = append(short, shortURL)
 	}
 
-	if len(urls) != 0 {
+	if len(full) != 0 {
 		for i, _ := range full {
 			urls = append(urls, URL{full[i], short[i]})
 		}
