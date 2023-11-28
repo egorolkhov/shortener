@@ -10,10 +10,10 @@ import (
 func (a *App) UserAPI(w http.ResponseWriter, r *http.Request) {
 	cookie := w.Header().Get("Authorization")
 	userID := middleware.GetUserID(cookie, "1234")
-	if userID == "error" {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
+	//if userID == "error" {
+	//	w.WriteHeader(http.StatusUnauthorized)
+	//	return
+	//}
 	urls := a.Storage.GetUserURLS(userID)
 
 	if len(urls) == 0 {

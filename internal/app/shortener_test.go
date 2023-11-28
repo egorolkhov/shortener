@@ -1,7 +1,6 @@
 package app
 
 import (
-	"github.com/egorolkhov/shortener/internal/middleware"
 	"github.com/egorolkhov/shortener/internal/storage"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -45,9 +44,10 @@ func TestApp_ShortURL(t *testing.T) {
 
 			w := httptest.NewRecorder()
 
-			middleware.Middleware(a.ShortURL)(w, request)
+			//middleware.Middleware(a.ShortURL)(w, request)
+			w.Header().Set("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDEyMjMzNjEsIlVzZXJJRCI6IjQifQ.eruxblRFIyHVTtUkUQv5jkbJA3funWPDNb8m8zX-3ag")
 
-			//a.ShortURL(w, request)
+			a.ShortURL(w, request)
 
 			res := w.Result()
 

@@ -47,5 +47,4 @@ func GetUserID(tokenString, secretKey string) string {
 
 	fmt.Println("Token is valid")
 	return claims.UserID
-	return claims.UserID
 }

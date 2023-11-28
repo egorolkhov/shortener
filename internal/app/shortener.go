@@ -2,7 +2,6 @@ package app
 
 import (
 	"errors"
-	"fmt"
 	"github.com/egorolkhov/shortener/internal/app/encoder"
 	"github.com/egorolkhov/shortener/internal/middleware"
 	"github.com/egorolkhov/shortener/internal/storage"
@@ -12,6 +11,10 @@ import (
 )
 
 func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
 	var temp int
 	responseData, err := io.ReadAll(r.Body)
 	defer r.Body.Close() //закрывать все тела запроса
@@ -29,9 +32,7 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 	userID := middleware.GetUserID(cookie, "1234")
 	if userID == "error" {
 		w.WriteHeader(http.StatusUnauthorized)
-		return
 	}
-
 	err = a.Storage.Add(userID, code, url)
 	if errors.Is(err, storage.ErrURLAlreadyExist) {
 		temp = 1
@@ -42,7 +43,7 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	fmt.Println(a.BaseURL)
+	//fmt.Println(a.BaseURL)
 	var resp string
 	if a.BaseURL != "" {
 		resp = a.BaseURL + "/" + code

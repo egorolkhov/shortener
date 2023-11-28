@@ -3,6 +3,7 @@ package middleware
 import (
 	"compress/gzip"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -12,6 +13,7 @@ import (
 func Middleware(h http.HandlerFunc) http.HandlerFunc {
 	foo := func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("default")
+		fmt.Println(err)
 		if err != nil {
 			switch {
 			case errors.Is(err, http.ErrNoCookie):
@@ -19,7 +21,10 @@ func Middleware(h http.HandlerFunc) http.HandlerFunc {
 				if err != nil {
 					log.Println(err)
 				}
-				cookie = &http.Cookie{Name: "default", Value: value, Expires: time.Now().Add(365 * 24 * time.Hour)}
+				cookie = &http.Cookie{
+					Name:    "default",
+					Value:   value,
+					Expires: time.Now().Add(365 * 24 * time.Hour)}
 				http.SetCookie(w, cookie)
 			default:
 				log.Println(err)
