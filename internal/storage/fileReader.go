@@ -23,7 +23,7 @@ func GetStorage(data Storage, filepath string) error {
 		fl := FileJSON{}
 		line := scanner.Bytes()
 		json.Unmarshal(line, &fl)
-		data.Add(fl.ShortURL, fl.OriginalURL)
+		data.Add("", fl.ShortURL, fl.OriginalURL)
 	}
 	if err = scanner.Err(); err != nil {
 		return err

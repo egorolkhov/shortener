@@ -10,13 +10,14 @@ type Data struct {
 	mu    sync.RWMutex
 	Urls  map[string]string
 	Codes map[string]string
+	Users map[string][]URL
 }
 
 func NewLocalData() *Data {
-	return &Data{sync.RWMutex{}, make(map[string]string), make(map[string]string)}
+	return &Data{sync.RWMutex{}, make(map[string]string), make(map[string]string), make(map[string][]URL)}
 }
 
-func (u *Data) Add(code, url string) error {
+func (u *Data) Add(userID, code, url string) error {
 	u.mu.Lock()
 	defer u.mu.Unlock()
 	if _, ok := u.Urls[url]; ok {
@@ -25,6 +26,7 @@ func (u *Data) Add(code, url string) error {
 	}
 	u.Urls[url] = code
 	u.Codes[code] = url
+	u.Users[userID] = append(u.Users[userID], URL{FullURL: url, ShortURL: code})
 	return nil
 }
 
@@ -44,4 +46,8 @@ func (u *Data) GetExist(url string) (string, error) {
 		return v, nil
 	}
 	return "", errors.New("error when getting short url")
+}
+
+func (u *Data) GetUserURLS(userID string) []URL {
+	return u.Users[userID]
 }

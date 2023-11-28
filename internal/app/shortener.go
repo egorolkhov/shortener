@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/egorolkhov/shortener/internal/app/encoder"
+	"github.com/egorolkhov/shortener/internal/middleware"
 	"github.com/egorolkhov/shortener/internal/storage"
 	"io"
 	"log"
@@ -24,7 +25,14 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/plain")
 
-	err = a.Storage.Add(code, url)
+	cookie := w.Header().Get("Authorization")
+	userID := middleware.GetUserID(cookie, "1234")
+	if userID == "error" {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	err = a.Storage.Add(userID, code, url)
 	if errors.Is(err, storage.ErrURLAlreadyExist) {
 		temp = 1
 		w.WriteHeader(http.StatusConflict)

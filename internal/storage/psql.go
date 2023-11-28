@@ -32,7 +32,8 @@ func CreateTable(DatabaseDSN string) error {
 	defer db.Close()
 
 	TableShortURL := `
-        CREATE TABLE IF NOT EXISTS short_url (
+        CREATE TABLE IF NOT EXISTS short_urls (
+            user_id TEXT, 
             correlation_id TEXT,
             short_url TEXT UNIQUE
         )
@@ -40,6 +41,7 @@ func CreateTable(DatabaseDSN string) error {
 
 	TableOriginalURL := `
         CREATE TABLE IF NOT EXISTS original_urls (
+            user_id TEXT,
             correlation_id TEXT,
             full_url TEXT UNIQUE
         )

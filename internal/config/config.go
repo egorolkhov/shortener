@@ -1,22 +1,31 @@
 package config
 
 import (
+	"bufio"
 	"errors"
 	"flag"
+	"fmt"
 	"os"
 	"strings"
 )
+
+const secretKeyPath = "tmp/key.txt"
 
 type Cfg struct {
 	Address     NetAddress
 	BaseURL     string
 	Filepath    string
 	DatabaseDSN string
+	SecretKey   string
 }
 
 func Config() *Cfg {
 	address := NewNetAddress()
 	baseURL := ""
+	secretKey, err := getKey(secretKeyPath)
+	if err != nil {
+		fmt.Println("can't get secretKey")
+	}
 
 	flag.Var(address, "a", "http server adress")
 	url := flag.String("b", baseURL, "base url address")
@@ -36,7 +45,26 @@ func Config() *Cfg {
 
 	_ = address.Set(os.Getenv("SERVER_ADDRESS"))
 
-	return &Cfg{Address: *address, BaseURL: *url, Filepath: *filepath, DatabaseDSN: *databaseDSN}
+	return &Cfg{Address: *address, BaseURL: *url, Filepath: *filepath, DatabaseDSN: *databaseDSN, SecretKey: secretKey}
+}
+
+func getKey(filepath string) (string, error) {
+	file, err := os.OpenFile(filepath, os.O_RDONLY, 0666)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	var line string
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line = scanner.Text()
+	}
+	if err = scanner.Err(); err != nil {
+		return "", err
+	}
+	return line, nil
 }
 
 type NetAddress struct {

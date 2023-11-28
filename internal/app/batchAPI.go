@@ -3,6 +3,7 @@ package app
 import (
 	"encoding/json"
 	"github.com/egorolkhov/shortener/internal/app/encoder"
+	"github.com/egorolkhov/shortener/internal/middleware"
 	"github.com/egorolkhov/shortener/internal/storage"
 	"log"
 	"net/http"
@@ -23,7 +24,14 @@ func (a *App) BatchAPI(w http.ResponseWriter, r *http.Request) {
 		codes = append(codes, encoder.Code())
 	}
 
-	err = storage.AddBatch(r.Context(), a.DatabaseDSN, codes, jsons)
+	cookie := w.Header().Get("Authorization")
+	userID := middleware.GetUserID(cookie, "1234")
+	if userID == "error" {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	err = storage.AddBatch(r.Context(), a.DatabaseDSN, userID, codes, jsons)
 	if err != nil {
 		log.Println(err)
 	}
@@ -54,7 +62,7 @@ func (a *App) BatchAPI(w http.ResponseWriter, r *http.Request) {
 	for i, json := range jsons {
 		storage.FileWrite(codes[i], json.OriginalURL, a.Filepath)
 		if a.flag != 1 {
-			a.Storage.Add(codes[i], json.OriginalURL)
+			a.Storage.Add(userID, codes[i], json.OriginalURL)
 		}
 	}
 
