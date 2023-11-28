@@ -24,9 +24,9 @@ func TestApp_DecodeURL(t *testing.T) {
 	}{
 		{
 			name: "simple test",
-			fields: &storage.Data{Urls: map[string]string{
-				"cdFCblAL": "https://example.com",
-			}},
+			fields: &storage.Data{
+				Urls:  map[string]string{"https://example.com": "cdFCblAL"},
+				Codes: map[string]string{"cdFCblAL": "https://example.com"}},
 			want: want{
 				contentType: "text/plain",
 				statusCode:  307,
@@ -37,9 +37,9 @@ func TestApp_DecodeURL(t *testing.T) {
 		},
 		{
 			name: "wrong code",
-			fields: &storage.Data{Urls: map[string]string{
-				"cdFCblAL": "https://example.com",
-			}},
+			fields: &storage.Data{
+				Urls:  map[string]string{"https://example.com": "cdFCblAL"},
+				Codes: map[string]string{"cdFCblAL": "https://example.com"}},
 			want: want{
 				contentType: "text/plain; charset=utf-8",
 				statusCode:  400,
@@ -50,7 +50,7 @@ func TestApp_DecodeURL(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := &App{tt.fields, "", ""}
+			a := &App{tt.fields, "", "", "", 0}
 
 			request := httptest.NewRequest(tt.want.method, "/"+tt.request, nil)
 

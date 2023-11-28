@@ -7,7 +7,7 @@ import (
 )
 
 func GetLogger(h http.HandlerFunc) http.HandlerFunc {
-	Foo := func(w http.ResponseWriter, r *http.Request) {
+	foo := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			Time := time.Now()
 			h(w, r)
@@ -20,5 +20,5 @@ func GetLogger(h http.HandlerFunc) http.HandlerFunc {
 			)
 		}
 	}
-	return Foo
+	return foo
 }

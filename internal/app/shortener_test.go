@@ -23,7 +23,7 @@ func TestApp_ShortURL(t *testing.T) {
 	}{
 		{
 			name:   "simple test",
-			fields: &storage.Data{Urls: map[string]string{}},
+			fields: &storage.Data{Urls: map[string]string{}, Codes: map[string]string{}},
 			want: want{
 				contentType: "text/plain",
 				statusCode:  201,
@@ -35,7 +35,7 @@ func TestApp_ShortURL(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := &App{tt.fields, "", ""}
+			a := &App{tt.fields, "", "", "", 0}
 
 			request := httptest.NewRequest(tt.want.method, "/", nil)
 
@@ -47,7 +47,7 @@ func TestApp_ShortURL(t *testing.T) {
 
 			assert.Equal(t, tt.want.statusCode, w.Code, "Код ответа не совпадает с ожидаемым")
 			assert.Equal(t, tt.want.contentType, res.Header.Get("Content-Type"), "Тип ответа не совпадает")
-			assert.Equal(t, tt.want.storageSize, len(a.Storage.Urls))
+			assert.Equal(t, tt.want.storageSize, len(a.Storage.(*storage.Data).Urls))
 			defer res.Body.Close()
 		})
 	}

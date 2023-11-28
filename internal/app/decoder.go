@@ -8,7 +8,17 @@ import (
 func (a *App) DecodeURL(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-	url, err := a.Storage.Get(id)
+
+	var url string
+	var err error
+
+	url, err = a.Storage.Get(id)
+	//if a.flag == 1 {
+	//	url, err = storage.GetDB(r.Context(), a.DatabaseDSN, id)
+	//} else {
+	//	url, err = a.Storage.Get(id)
+	//}
+	//url, err = storage.GetDB(r.Context(), a.DatabaseDSN, id)
 	if err != nil {
 		http.Error(w, "error when getting from storage", http.StatusBadRequest)
 		return

@@ -39,6 +39,6 @@ func main() {
 
 	err = srv.ListenAndServe()
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 }
