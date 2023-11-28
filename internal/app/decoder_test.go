@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/egorolkhov/shortener/internal/middleware"
 	"github.com/egorolkhov/shortener/internal/storage"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
@@ -64,7 +65,9 @@ func TestApp_DecodeURL(t *testing.T) {
 
 			request = mux.SetURLVars(request, vars)
 
-			a.DecodeURL(w, request)
+			middleware.Middleware(a.DecodeURL)(w, request)
+
+			//a.DecodeURL(w, request)
 
 			res := w.Result()
 

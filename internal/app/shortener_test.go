@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/egorolkhov/shortener/internal/middleware"
 	"github.com/egorolkhov/shortener/internal/storage"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -44,7 +45,9 @@ func TestApp_ShortURL(t *testing.T) {
 
 			w := httptest.NewRecorder()
 
-			a.ShortURL(w, request)
+			middleware.Middleware(a.ShortURL)(w, request)
+
+			//a.ShortURL(w, request)
 
 			res := w.Result()
 
