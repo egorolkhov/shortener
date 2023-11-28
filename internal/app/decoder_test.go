@@ -27,7 +27,7 @@ func TestApp_DecodeURL(t *testing.T) {
 			fields: &storage.Data{
 				Urls:  map[string]string{"https://example.com": "cdFCblAL"},
 				Codes: map[string]string{"cdFCblAL": "https://example.com"},
-				Users: map[string][]storage.URL{}},
+				Users: map[string][]storage.URL{"cdFCblAL": []storage.URL{{"short", "fillURL"}}}},
 			want: want{
 				contentType: "text/plain",
 				statusCode:  307,

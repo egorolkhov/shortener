@@ -26,7 +26,7 @@ func TestApp_ShortURL(t *testing.T) {
 			fields: &storage.Data{
 				Urls:  map[string]string{},
 				Codes: map[string]string{},
-				Users: map[string][]storage.URL{}},
+				Users: map[string][]storage.URL{"cdFCblAL": []storage.URL{{"short", "fillURL"}}}},
 			want: want{
 				contentType: "text/plain",
 				statusCode:  201,
