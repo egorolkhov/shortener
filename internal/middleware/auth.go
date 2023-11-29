@@ -9,7 +9,7 @@ import (
 
 const TOKEN_EXP = time.Hour * 3
 
-var i int
+var i int = 1
 
 type Claims struct {
 	jwt.RegisteredClaims
