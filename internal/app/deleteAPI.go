@@ -17,6 +17,9 @@ func (a *App) DeleteAPI(w http.ResponseWriter, r *http.Request) {
 	}
 	var codes []string
 	err = json.Unmarshal(responseData, &codes)
+	if err != nil {
+		log.Println(err)
+	}
 
 	cookie := w.Header().Get("Authorization")
 	userID := middleware.GetUserID(cookie, "1234")
