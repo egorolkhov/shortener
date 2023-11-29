@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/egorolkhov/shortener/internal/middleware"
 	"github.com/egorolkhov/shortener/internal/storage"
-	"log"
 	"net/http"
 )
 
@@ -13,9 +12,9 @@ func (a *App) UserAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	if storage, ok := a.Storage.(*storage.Data); ok {
-		log.Println(storage.Urls)
-		log.Println(storage.Codes)
-		log.Println(storage.Users)
+		fmt.Println(storage.Urls)
+		fmt.Println(storage.Codes)
+		fmt.Println(storage.Users)
 	}
 
 	cookie := w.Header().Get("Authorization")
