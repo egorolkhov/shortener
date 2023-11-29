@@ -70,5 +70,11 @@ func (a *App) BatchAPI(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Write(result)
 
+	if storage, ok := a.Storage.(*storage.Data); ok {
+		log.Println(storage.Urls)
+		log.Println(storage.Codes)
+		log.Println(storage.Users)
+	}
+
 	//log.Println(a.Storage.Urls)
 }

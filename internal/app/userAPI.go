@@ -4,11 +4,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/egorolkhov/shortener/internal/middleware"
+	"github.com/egorolkhov/shortener/internal/storage"
+	"log"
 	"net/http"
 )
 
 func (a *App) UserAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+
+	if storage, ok := a.Storage.(*storage.Data); ok {
+		log.Println(storage.Urls)
+		log.Println(storage.Codes)
+		log.Println(storage.Users)
+	}
 
 	cookie := w.Header().Get("Authorization")
 	userID := middleware.GetUserID(cookie, "1234")
@@ -28,6 +36,5 @@ func (a *App) UserAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	fmt.Println(string(result))
 	w.Write(result)
 }

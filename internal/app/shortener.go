@@ -64,6 +64,7 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 	if storage, ok := a.Storage.(*storage.Data); ok {
 		log.Println(storage.Urls)
 		log.Println(storage.Codes)
+		log.Println(storage.Users)
 	}
 	//  log.Println(a.Storage.Urls)
 }
