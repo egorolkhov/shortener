@@ -19,7 +19,6 @@ func (a *App) UserAPI(w http.ResponseWriter, r *http.Request) {
 
 	cookie := w.Header().Get("Authorization")
 	userID := middleware.GetUserID(cookie, "1234")
-	fmt.Println("TOKEN", cookie)
 	fmt.Println("USERID", userID)
 	urls := a.Storage.GetUserURLS(userID)
 	fmt.Println("URLS", urls)

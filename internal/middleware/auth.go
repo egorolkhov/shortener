@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
+	"math/rand"
 	"strconv"
 	"sync"
 	"time"
@@ -22,8 +23,7 @@ type Claims struct {
 }
 
 func BuidToken(secretKey string) (string, error) {
-	userID := i
-	i = i + 1
+	userID := rand.Int()
 	fmt.Println("HERE", userID)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
