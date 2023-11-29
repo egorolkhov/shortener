@@ -183,7 +183,7 @@ func (d *DB) GetUserURLS(userID string) []URL {
 	}
 
 	if len(full) != 0 {
-		for i, _ := range full {
+		for i := 0; i <= len(full); i++ {
 			urls = append(urls, URL{"http://localhost:8080/" + short[i], full[i]})
 		}
 	}
