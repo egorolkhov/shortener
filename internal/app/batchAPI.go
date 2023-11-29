@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/egorolkhov/shortener/internal/app/encoder"
 	"github.com/egorolkhov/shortener/internal/middleware"
 	"github.com/egorolkhov/shortener/internal/storage"
@@ -11,7 +10,6 @@ import (
 )
 
 func (a *App) BatchAPI(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("ADD_BATCH")
 	var jsons []storage.RequestBatch
 
 	err := json.NewDecoder(r.Body).Decode(&jsons)
@@ -71,12 +69,6 @@ func (a *App) BatchAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	w.Write(result)
-
-	if storage, ok := a.Storage.(*storage.Data); ok {
-		fmt.Println(storage.Urls)
-		fmt.Println(storage.Codes)
-		fmt.Println(storage.Users)
-	}
 
 	//log.Println(a.Storage.Urls)
 }

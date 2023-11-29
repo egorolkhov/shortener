@@ -77,9 +77,8 @@ func (a *App) ShortAPI(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 
 	if storage, ok := a.Storage.(*storage.Data); ok {
-		fmt.Println(storage.Urls)
-		fmt.Println(storage.Codes)
-		fmt.Println(storage.Users)
+		log.Println(storage.Urls)
+		log.Println(storage.Codes)
 	}
 	//log.Println(a.Storage.Urls)
 }

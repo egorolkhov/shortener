@@ -2,7 +2,6 @@ package app
 
 import (
 	"errors"
-	"fmt"
 	"github.com/egorolkhov/shortener/internal/app/encoder"
 	"github.com/egorolkhov/shortener/internal/middleware"
 	"github.com/egorolkhov/shortener/internal/storage"
@@ -63,9 +62,8 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(resp))
 
 	if storage, ok := a.Storage.(*storage.Data); ok {
-		fmt.Println(storage.Urls)
-		fmt.Println(storage.Codes)
-		fmt.Println(storage.Users)
+		log.Println(storage.Urls)
+		log.Println(storage.Codes)
 	}
 	//  log.Println(a.Storage.Urls)
 }

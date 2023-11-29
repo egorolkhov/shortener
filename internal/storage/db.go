@@ -3,6 +3,7 @@ package storage
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 )
 
@@ -175,4 +176,67 @@ func (d *DB) GetUserURLS(userID string) []URL {
 		}
 	}
 	return urls
+}
+
+func IdDeleted(ctx context.Context, DatabaseDSN string, short string) bool {
+	db, err := sql.Open("pgx", DatabaseDSN)
+	if err != nil {
+		log.Println(err)
+	}
+	defer db.Close()
+
+	var deleted bool
+
+	row := db.QueryRowContext(ctx, "SELECT is_delete FROM short_urls WHERE short_url = $1", short)
+	err = row.Scan(&deleted)
+	if err != nil {
+		log.Println(err)
+	}
+	return deleted
+}
+
+func DeleteURL(ctx context.Context, DatabaseDSN string, userID string, codes []string) error {
+	db, err := sql.Open("pgx", DatabaseDSN)
+	if err != nil {
+		log.Println(err)
+	}
+	defer db.Close()
+
+	var uuids []string
+
+	rows, err := db.QueryContext(ctx, "SELECT correlation_id FROM short_urls WHERE user_id = $1 and short_url = ANY($2)",
+		userID, codes)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	for rows.Next() {
+		var uuid string
+		if err = rows.Scan(&uuid); err != nil {
+			log.Fatal(err)
+		}
+		uuids = append(uuids, uuid)
+	}
+
+	tx, err := db.Begin()
+
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	updt, err := tx.PrepareContext(ctx, "UPDATE short_urls SET is_deleted = true WHERE correlation_id = $1")
+	if err != nil {
+		return err
+	}
+	defer updt.Close()
+
+	fmt.Println(uuids)
+	for _, uuid := range uuids {
+		_, err = updt.Exec(uuid)
+		if err != nil {
+			return err
+		}
+	}
+	return tx.Commit()
 }

@@ -2,26 +2,16 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/egorolkhov/shortener/internal/middleware"
-	"github.com/egorolkhov/shortener/internal/storage"
 	"net/http"
 )
 
 func (a *App) UserAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	if storage, ok := a.Storage.(*storage.Data); ok {
-		fmt.Println(storage.Urls)
-		fmt.Println(storage.Codes)
-		fmt.Println(storage.Users)
-	}
-
 	cookie := w.Header().Get("Authorization")
 	userID := middleware.GetUserID(cookie, "1234")
-	fmt.Println("USERID", userID)
 	urls := a.Storage.GetUserURLS(userID)
-	fmt.Println("URLS", urls)
 
 	if len(urls) == 0 {
 		w.WriteHeader(http.StatusNoContent)

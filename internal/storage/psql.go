@@ -35,7 +35,8 @@ func CreateTable(DatabaseDSN string) error {
         CREATE TABLE IF NOT EXISTS short_urls (
             user_id TEXT, 
             correlation_id TEXT,
-            short_url TEXT UNIQUE
+            is_deleted BOOL,
+            short_url TEXT UNIQUE                                  
         )
     `
 

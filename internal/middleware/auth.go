@@ -24,7 +24,6 @@ type Claims struct {
 
 func BuidToken(secretKey string) (string, error) {
 	userID := rand.Int()
-	fmt.Println("HERE", userID)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		RegisteredClaims: jwt.RegisteredClaims{

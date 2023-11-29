@@ -12,11 +12,12 @@ func NewRouter(cfg *config.Cfg) *mux.Router {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/ping", middleware.Middleware(logger.GetLogger(app.PSQLconnection))).Methods("GET")
-	router.HandleFunc("/", middleware.Middleware(logger.PostLogger(app.ShortURL))).Methods("POST")
-	router.HandleFunc("/{id}", middleware.Middleware(logger.GetLogger(app.DecodeURL))).Methods("GET")
-	router.HandleFunc("/api/shorten", middleware.Middleware(logger.PostLogger(app.ShortAPI))).Methods("POST")
-	router.HandleFunc("/api/shorten/batch", middleware.Middleware(logger.PostLogger(app.BatchAPI))).Methods("POST")
-	router.HandleFunc("/api/user/urls", middleware.Middleware(logger.PostLogger(app.UserAPI))).Methods("GET")
+	router.HandleFunc("/api/user/urls", middleware.Cookie(app.DeleteAPI))
+	router.HandleFunc("/ping", middleware.Cookie(middleware.Middleware(logger.GetLogger(app.PSQLconnection)))).Methods("GET")
+	router.HandleFunc("/", middleware.Cookie(middleware.Middleware(logger.PostLogger(app.ShortURL)))).Methods("POST")
+	router.HandleFunc("/{id}", middleware.Cookie(middleware.Middleware(logger.GetLogger(app.DecodeURL)))).Methods("GET")
+	router.HandleFunc("/api/shorten", middleware.Cookie(middleware.Middleware(logger.PostLogger(app.ShortAPI)))).Methods("POST")
+	router.HandleFunc("/api/shorten/batch", middleware.Cookie(middleware.Middleware(logger.PostLogger(app.BatchAPI)))).Methods("POST")
+	router.HandleFunc("/api/user/urls", middleware.Cookie(middleware.Middleware(logger.PostLogger(app.UserAPI)))).Methods("GET")
 	return router
 }
