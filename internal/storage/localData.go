@@ -26,7 +26,10 @@ func (u *Data) Add(userID, code, url string) error {
 	}
 	u.Urls[url] = code
 	u.Codes[code] = url
-	u.Users[userID] = append(u.Users[userID], URL{FullURL: url, ShortURL: code})
+	if _, ok := u.Codes[url]; !ok {
+		u.Users[userID] = append(u.Users[userID], URL{FullURL: url, ShortURL: code})
+	}
+	//u.Users[userID] = append(u.Users[userID], URL{FullURL: url, ShortURL: code})
 	return nil
 }
 

@@ -4,12 +4,17 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"strconv"
+	"sync"
 	"time"
 )
 
 const TOKEN_EXP = time.Hour * 3
 
 var i int = 1
+var (
+	IDs   = make(map[string]string)
+	mutex sync.Mutex
+)
 
 type Claims struct {
 	jwt.RegisteredClaims
@@ -19,6 +24,7 @@ type Claims struct {
 func BuidToken(secretKey string) (string, error) {
 	userID := i
 	i = i + 1
+	fmt.Println("HERE", userID)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
