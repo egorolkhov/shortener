@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-const TOKEN_EXP = time.Hour * 3
+const TokenExp = time.Hour * 3
 
 var i int = 1
 var (
@@ -27,7 +27,7 @@ func BuidToken(secretKey string) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TOKEN_EXP))},
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TokenExp))},
 		UserID: strconv.Itoa(userID),
 	})
 

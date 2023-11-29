@@ -13,7 +13,7 @@ func (a *App) DecodeURL(w http.ResponseWriter, r *http.Request) {
 	var url string
 	var err error
 
-	if storage.IdDeleted(r.Context(), a.DatabaseDSN, id) {
+	if storage.IsDeleted(r.Context(), a.DatabaseDSN, id) {
 		w.WriteHeader(http.StatusGone)
 		return
 	}

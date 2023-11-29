@@ -153,6 +153,9 @@ func (d *DB) GetUserURLS(userID string) []URL {
 	var short []string
 
 	rows, err := db.QueryContext(d.ctx, "SELECT full_url FROM original_urls WHERE user_id = $1", userID)
+	if err != nil {
+		log.Println(err)
+	}
 	for rows.Next() {
 		var fullURL string
 		if err = rows.Scan(&fullURL); err != nil {
@@ -160,14 +163,23 @@ func (d *DB) GetUserURLS(userID string) []URL {
 		}
 		full = append(full, fullURL)
 	}
+	if err = rows.Err(); err != nil {
+		log.Println(err)
+	}
 
 	rows, err = db.QueryContext(d.ctx, "SELECT short_url FROM short_urls WHERE user_id = $1", userID)
+	if err != nil {
+		log.Println(err)
+	}
 	for rows.Next() {
 		var shortURL string
 		if err = rows.Scan(&shortURL); err != nil {
 			log.Fatal(err)
 		}
 		short = append(short, shortURL)
+	}
+	if err = rows.Err(); err != nil {
+		log.Println(err)
 	}
 
 	if len(full) != 0 {
@@ -178,7 +190,7 @@ func (d *DB) GetUserURLS(userID string) []URL {
 	return urls
 }
 
-func IdDeleted(ctx context.Context, DatabaseDSN string, short string) bool {
+func IsDeleted(ctx context.Context, DatabaseDSN string, short string) bool {
 	db, err := sql.Open("pgx", DatabaseDSN)
 	if err != nil {
 		log.Println(err)
@@ -216,6 +228,9 @@ func DeleteURL(ctx context.Context, DatabaseDSN string, userID string, codes []s
 			log.Fatal(err)
 		}
 		uuids = append(uuids, uuid)
+	}
+	if err = rows.Err(); err != nil {
+		return err
 	}
 
 	tx, err := db.Begin()
