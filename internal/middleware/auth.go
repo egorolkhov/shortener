@@ -3,12 +3,13 @@ package middleware
 import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
-	"math/rand"
 	"strconv"
 	"time"
 )
 
 const TOKEN_EXP = time.Hour * 3
+
+var i int
 
 type Claims struct {
 	jwt.RegisteredClaims
@@ -16,7 +17,8 @@ type Claims struct {
 }
 
 func BuidToken(secretKey string) (string, error) {
-	userID := rand.Int()
+	userID := i
+	i = i + 1
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
