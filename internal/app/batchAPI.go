@@ -11,6 +11,7 @@ import (
 )
 
 func (a *App) BatchAPI(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("ADD_BATCH")
 	var jsons []storage.RequestBatch
 
 	err := json.NewDecoder(r.Body).Decode(&jsons)
