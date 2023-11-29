@@ -45,6 +45,8 @@ func Config() *Cfg {
 
 	_ = address.Set(os.Getenv("SERVER_ADDRESS"))
 
+	fmt.Println(*address, *url, *filepath, *databaseDSN)
+
 	return &Cfg{Address: *address, BaseURL: *url, Filepath: *filepath, DatabaseDSN: *databaseDSN, SecretKey: secretKey}
 }
 
