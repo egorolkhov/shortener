@@ -9,18 +9,18 @@ import (
 
 func (a *App) UserAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	
+
 	cookie := w.Header().Get("Authorization")
 	userID := middleware.GetUserID(cookie, "1234")
+	fmt.Println("TOKEN", cookie)
+	fmt.Println("USERID", userID)
 	urls := a.Storage.GetUserURLS(userID)
-	fmt.Println(urls)
+	fmt.Println("URLS", urls)
 
 	if len(urls) == 0 {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
-
-	fmt.Println(urls)
 
 	result, err := json.Marshal(urls)
 	if err != nil {
@@ -30,12 +30,4 @@ func (a *App) UserAPI(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	fmt.Println(string(result))
 	w.Write(result)
-}
-
-type URL struct {
-	FullURL string
-}
-
-type User struct {
-	Name string
 }

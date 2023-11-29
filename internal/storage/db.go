@@ -171,7 +171,7 @@ func (d *DB) GetUserURLS(userID string) []URL {
 
 	if len(full) != 0 {
 		for i, _ := range full {
-			urls = append(urls, URL{full[i], short[i]})
+			urls = append(urls, URL{full[i], "http://localhost:8080/" + short[i]})
 		}
 	}
 	return urls
