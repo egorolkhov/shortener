@@ -24,7 +24,7 @@ func Middleware(h http.HandlerFunc) http.HandlerFunc {
 				cookie = &http.Cookie{
 					Name:    "default",
 					Value:   value,
-					Expires: time.Now().Add(24 * time.Millisecond)}
+					Expires: time.Now().Add(24 * time.Hour)}
 				http.SetCookie(w, cookie)
 			default:
 				log.Println(err)
