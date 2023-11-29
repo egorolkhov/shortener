@@ -187,7 +187,7 @@ func IdDeleted(ctx context.Context, DatabaseDSN string, short string) bool {
 
 	var deleted bool
 
-	row := db.QueryRowContext(ctx, "SELECT is_delete FROM short_urls WHERE short_url = $1", short)
+	row := db.QueryRowContext(ctx, "SELECT is_deleted FROM short_urls WHERE short_url = $1", short)
 	err = row.Scan(&deleted)
 	if err != nil {
 		log.Println(err)
