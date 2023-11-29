@@ -8,6 +8,8 @@ import (
 )
 
 func (a *App) UserAPI(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	
 	cookie := w.Header().Get("Authorization")
 	userID := middleware.GetUserID(cookie, "1234")
 	urls := a.Storage.GetUserURLS(userID)
