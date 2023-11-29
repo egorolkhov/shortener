@@ -29,7 +29,7 @@ func TestApp_ShortURL(t *testing.T) {
 				Users: map[string][]storage.URL{"cdFCblAL": []storage.URL{{"short", "fillURL"}}}},
 			want: want{
 				contentType: "text/plain",
-				statusCode:  201,
+				statusCode:  401,
 				storageSize: 1,
 				method:      http.MethodPost,
 			},
