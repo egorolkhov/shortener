@@ -13,9 +13,11 @@ func (a *App) DecodeURL(w http.ResponseWriter, r *http.Request) {
 	var url string
 	var err error
 
-	if storage.IsDeleted(r.Context(), a.Storage.(*storage.DB).DB, id) {
-		w.WriteHeader(http.StatusGone)
-		return
+	if db, ok := a.Storage.(*storage.DB); ok {
+		if storage.IsDeleted(r.Context(), db.DB, id) {
+			w.WriteHeader(http.StatusGone)
+			return
+		}
 	}
 
 	url, err = a.Storage.Get(r.Context(), id)
