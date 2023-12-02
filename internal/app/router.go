@@ -4,10 +4,11 @@ import (
 	config "github.com/egorolkhov/shortener/internal/config"
 	"github.com/egorolkhov/shortener/internal/logger"
 	"github.com/egorolkhov/shortener/internal/middleware"
+	"github.com/egorolkhov/shortener/internal/storage"
 	"github.com/gorilla/mux"
 )
 
-func NewRouter(cfg *config.Cfg) *mux.Router {
+func NewRouter(cfg *config.Cfg) (*mux.Router, storage.Storage) {
 	app := New(cfg)
 
 	router := mux.NewRouter()
@@ -19,5 +20,5 @@ func NewRouter(cfg *config.Cfg) *mux.Router {
 	router.HandleFunc("/api/shorten/batch", middleware.Cookie(middleware.Middleware(logger.PostLogger(app.BatchAPI)))).Methods("POST")
 	router.HandleFunc("/api/user/urls", middleware.Cookie(middleware.Middleware(logger.PostLogger(app.UserAPI)))).Methods("GET")
 	router.HandleFunc("/api/user/urls", middleware.Cookie(app.DeleteAPI)).Methods("DELETE")
-	return router
+	return router, app.Storage
 }

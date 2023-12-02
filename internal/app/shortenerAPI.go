@@ -36,17 +36,17 @@ func (a *App) ShortAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	cookie := w.Header().Get("Authorization")
-	userID := middleware.GetUserID(cookie, "1234")
+	userID := middleware.GetUserID(cookie)
 	if userID == "error" {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
-	err = a.Storage.Add(userID, code, url.URL)
+	err = a.Storage.Add(r.Context(), userID, code, url.URL)
 	if errors.Is(err, storage.ErrURLAlreadyExist) {
 		temp = 1
 		w.WriteHeader(http.StatusConflict)
-		code, err = a.Storage.GetExist(url.URL)
+		code, err = a.Storage.GetExist(r.Context(), url.URL)
 		if err != nil {
 			log.Println(err)
 		}

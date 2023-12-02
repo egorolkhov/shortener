@@ -22,10 +22,10 @@ func (a *App) DeleteAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	cookie := w.Header().Get("Authorization")
-	userID := middleware.GetUserID(cookie, "1234")
+	userID := middleware.GetUserID(cookie)
 	w.WriteHeader(http.StatusAccepted)
 
-	err = storage.DeleteURL(r.Context(), a.DatabaseDSN, userID, codes)
+	err = storage.DeleteURL(r.Context(), a.Storage.(*storage.DB).DB, userID, codes)
 	if err != nil {
 		log.Println(err)
 	}

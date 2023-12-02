@@ -10,8 +10,8 @@ func (a *App) UserAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	cookie := w.Header().Get("Authorization")
-	userID := middleware.GetUserID(cookie, "1234")
-	urls := a.Storage.GetUserURLS(userID)
+	userID := middleware.GetUserID(cookie)
+	urls := a.Storage.GetUserURLS(r.Context(), userID)
 
 	if len(urls) == 0 {
 		w.WriteHeader(http.StatusNoContent)

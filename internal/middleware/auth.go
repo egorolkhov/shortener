@@ -11,7 +11,6 @@ import (
 
 const TokenExp = time.Hour * 3
 
-var i int = 1
 var (
 	IDs   = make(map[string]string)
 	mutex sync.Mutex
@@ -38,7 +37,7 @@ func BuidToken(secretKey string) (string, error) {
 	return tokenString, nil
 }
 
-func GetUserID(tokenString, secretKey string) string {
+func GetUserID(tokenString string) string {
 	claims := &Claims{}
 
 	token, _ := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {

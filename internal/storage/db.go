@@ -13,24 +13,21 @@ type URL struct {
 }
 
 type DB struct {
-	ctx         context.Context
-	DatabaseDSN string
+	DB *sql.DB
 }
 
 func NewDB(DatabaseDSN string) *DB {
-	return &DB{context.Background(), DatabaseDSN}
-}
-
-func (d *DB) Add(userID, code, url string) error {
-	db, err := sql.Open("pgx", d.DatabaseDSN)
+	db, err := sql.Open("pgx", DatabaseDSN)
 	if err != nil {
 		log.Println(err)
 	}
-	defer db.Close()
+	return &DB{db}
+}
 
+func (d *DB) Add(ctx context.Context, userID, code, url string) error {
 	uuid := generateCorrelationID()
 
-	result, err := db.ExecContext(d.ctx, "INSERT INTO original_urls (user_id, correlation_id, full_url)"+
+	result, err := d.DB.ExecContext(ctx, "INSERT INTO original_urls (user_id, correlation_id, full_url)"+
 		" VALUES ($1,$2,$3) ON CONFLICT (full_url) DO NOTHING;", userID, uuid, url)
 
 	if i, _ := result.RowsAffected(); i == 0 {
@@ -40,7 +37,7 @@ func (d *DB) Add(userID, code, url string) error {
 		return err
 	}
 
-	_, err = db.ExecContext(d.ctx, "INSERT INTO short_urls (user_id, correlation_id, short_url) "+
+	_, err = d.DB.ExecContext(ctx, "INSERT INTO short_urls (user_id, correlation_id, short_url) "+
 		" VALUES ($1,$2,$3)", userID, uuid, code)
 	if err != nil {
 		return err
@@ -48,50 +45,38 @@ func (d *DB) Add(userID, code, url string) error {
 	return nil
 }
 
-func (d *DB) Get(short string) (string, error) {
-	db, err := sql.Open("pgx", d.DatabaseDSN)
-	if err != nil {
-		log.Println(err)
-	}
-	defer db.Close()
-
+func (d *DB) Get(ctx context.Context, short string) (string, error) {
 	var uuid string
 
-	row := db.QueryRowContext(d.ctx, "SELECT correlation_id FROM short_urls WHERE short_url = $1", short)
-	err = row.Scan(&uuid)
+	row := d.DB.QueryRowContext(ctx, "SELECT correlation_id FROM short_urls WHERE short_url = $1", short)
+	err := row.Scan(&uuid)
 	if err != nil {
-		log.Println("HERE1", err)
+		log.Println(err)
 	}
 
 	var url URL
 
-	row = db.QueryRowContext(d.ctx, "SELECT full_url FROM original_urls WHERE correlation_id = $1", uuid)
+	row = d.DB.QueryRowContext(ctx, "SELECT full_url FROM original_urls WHERE correlation_id = $1", uuid)
 	err = row.Scan(&url.FullURL)
 	if err != nil {
-		log.Println("HERE2", err)
+		log.Println(err)
 	}
 
 	return url.FullURL, nil
 }
 
-func (d *DB) GetExist(url string) (string, error) {
-	db, err := sql.Open("pgx", d.DatabaseDSN)
-	if err != nil {
-		log.Println(err)
-	}
-	defer db.Close()
-
+func (d *DB) GetExist(ctx context.Context, url string) (string, error) {
 	var id string
 
-	row := db.QueryRowContext(d.ctx, "SELECT correlation_id FROM original_urls WHERE full_url = $1", url)
-	err = row.Scan(&id)
+	row := d.DB.QueryRowContext(ctx, "SELECT correlation_id FROM original_urls WHERE full_url = $1", url)
+	err := row.Scan(&id)
 	if err != nil {
 		log.Println(err)
 	}
 
 	var short string
 
-	row = db.QueryRowContext(d.ctx, "SELECT short_url FROM short_urls WHERE correlation_id = $1", id)
+	row = d.DB.QueryRowContext(ctx, "SELECT short_url FROM short_urls WHERE correlation_id = $1", id)
 	err = row.Scan(&short)
 	if err != nil {
 		log.Println(err)
@@ -100,12 +85,7 @@ func (d *DB) GetExist(url string) (string, error) {
 	return short, nil
 }
 
-func AddBatch(ctx context.Context, DatabaseDSN string, userID string, codes []string, jsons []RequestBatch) error {
-	db, err := sql.Open("pgx", DatabaseDSN)
-	if err != nil {
-		log.Println(err)
-	}
-	defer db.Close()
+func AddBatch(ctx context.Context, db *sql.DB, userID string, codes []string, jsons []RequestBatch) error {
 
 	tx, err := db.Begin()
 
@@ -141,18 +121,12 @@ func AddBatch(ctx context.Context, DatabaseDSN string, userID string, codes []st
 	return tx.Commit()
 }
 
-func (d *DB) GetUserURLS(userID string) []URL {
-	db, err := sql.Open("pgx", d.DatabaseDSN)
-	if err != nil {
-		log.Println(err)
-	}
-	defer db.Close()
-
+func (d *DB) GetUserURLS(ctx context.Context, userID string) []URL {
 	var urls []URL
 	var full []string
 	var short []string
 
-	rows, err := db.QueryContext(d.ctx, "SELECT full_url FROM original_urls WHERE user_id = $1", userID)
+	rows, err := d.DB.QueryContext(ctx, "SELECT full_url FROM original_urls WHERE user_id = $1", userID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -167,7 +141,7 @@ func (d *DB) GetUserURLS(userID string) []URL {
 		log.Println(err)
 	}
 
-	rows, err = db.QueryContext(d.ctx, "SELECT short_url FROM short_urls WHERE user_id = $1", userID)
+	rows, err = d.DB.QueryContext(ctx, "SELECT short_url FROM short_urls WHERE user_id = $1", userID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -190,30 +164,18 @@ func (d *DB) GetUserURLS(userID string) []URL {
 	return urls
 }
 
-func IsDeleted(ctx context.Context, DatabaseDSN string, short string) bool {
-	db, err := sql.Open("pgx", DatabaseDSN)
-	if err != nil {
-		log.Println(err)
-	}
-	defer db.Close()
-
+func IsDeleted(ctx context.Context, db *sql.DB, short string) bool {
 	var deleted bool
 
 	row := db.QueryRowContext(ctx, "SELECT is_deleted FROM short_urls WHERE short_url = $1", short)
-	err = row.Scan(&deleted)
+	err := row.Scan(&deleted)
 	if err != nil {
 		log.Println(err)
 	}
 	return deleted
 }
 
-func DeleteURL(ctx context.Context, DatabaseDSN string, userID string, codes []string) error {
-	db, err := sql.Open("pgx", DatabaseDSN)
-	if err != nil {
-		log.Println(err)
-	}
-	defer db.Close()
-
+func DeleteURL(ctx context.Context, db *sql.DB, userID string, codes []string) error {
 	var uuids []string
 
 	rows, err := db.QueryContext(ctx, "SELECT correlation_id FROM short_urls WHERE user_id = $1 and short_url = ANY($2)",

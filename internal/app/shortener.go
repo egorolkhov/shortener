@@ -29,15 +29,15 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 
 	cookie := w.Header().Get("Authorization")
-	userID := middleware.GetUserID(cookie, "1234")
+	userID := middleware.GetUserID(cookie)
 	if userID == "error" {
 		w.WriteHeader(http.StatusUnauthorized)
 	}
-	err = a.Storage.Add(userID, code, url)
+	err = a.Storage.Add(r.Context(), userID, code, url)
 	if errors.Is(err, storage.ErrURLAlreadyExist) {
 		temp = 1
 		w.WriteHeader(http.StatusConflict)
-		code, err = a.Storage.GetExist(url)
+		code, err = a.Storage.GetExist(r.Context(), url)
 		if err != nil {
 			log.Println(err)
 		}

@@ -5,6 +5,7 @@ import (
 	"github.com/egorolkhov/shortener/internal/app"
 	"github.com/egorolkhov/shortener/internal/config"
 	"github.com/egorolkhov/shortener/internal/logger"
+	"github.com/egorolkhov/shortener/internal/storage"
 	"log"
 	"net/http"
 	"os"
@@ -14,7 +15,10 @@ import (
 func main() {
 	cfg := config.Config()
 
-	r := app.NewRouter(cfg)
+	r, db := app.NewRouter(cfg)
+	if storage, ok := db.(*storage.DB); ok {
+		defer storage.DB.Close()
+	}
 
 	srv := http.Server{
 		Addr:    cfg.Address.String(),

@@ -25,13 +25,13 @@ func (a *App) BatchAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	cookie := w.Header().Get("Authorization")
-	userID := middleware.GetUserID(cookie, "1234")
+	userID := middleware.GetUserID(cookie)
 	if userID == "error" {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
-	err = storage.AddBatch(r.Context(), a.DatabaseDSN, userID, codes, jsons)
+	err = storage.AddBatch(r.Context(), a.Storage.(*storage.DB).DB, userID, codes, jsons)
 	if err != nil {
 		log.Println(err)
 	}
@@ -62,7 +62,7 @@ func (a *App) BatchAPI(w http.ResponseWriter, r *http.Request) {
 	for i, json := range jsons {
 		storage.FileWrite(codes[i], json.OriginalURL, a.Filepath)
 		if a.flag != 1 {
-			a.Storage.Add(userID, codes[i], json.OriginalURL)
+			a.Storage.Add(r.Context(), userID, codes[i], json.OriginalURL)
 		}
 	}
 
