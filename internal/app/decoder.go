@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/egorolkhov/shortener/internal/storage"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -12,13 +13,15 @@ func (a *App) DecodeURL(w http.ResponseWriter, r *http.Request) {
 	var url string
 	var err error
 
-	url, err = a.Storage.Get(id)
-	//if a.flag == 1 {
-	//	url, err = storage.GetDB(r.Context(), a.DatabaseDSN, id)
-	//} else {
-	//	url, err = a.Storage.Get(id)
-	//}
-	//url, err = storage.GetDB(r.Context(), a.DatabaseDSN, id)
+	if db, ok := a.Storage.(*storage.DB); ok {
+		if storage.IsDeleted(r.Context(), db.DB, id) {
+			w.WriteHeader(http.StatusGone)
+			return
+		}
+	}
+
+	url, err = a.Storage.Get(r.Context(), id)
+
 	if err != nil {
 		http.Error(w, "error when getting from storage", http.StatusBadRequest)
 		return

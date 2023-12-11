@@ -2,8 +2,8 @@ package app
 
 import (
 	"errors"
-	"fmt"
 	"github.com/egorolkhov/shortener/internal/app/encoder"
+	"github.com/egorolkhov/shortener/internal/middleware"
 	"github.com/egorolkhov/shortener/internal/storage"
 	"io"
 	"log"
@@ -11,6 +11,10 @@ import (
 )
 
 func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
 	var temp int
 	responseData, err := io.ReadAll(r.Body)
 	defer r.Body.Close() //закрывать все тела запроса
@@ -24,17 +28,22 @@ func (a *App) ShortURL(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/plain")
 
-	err = a.Storage.Add(code, url)
+	cookie := w.Header().Get("Authorization")
+	userID := middleware.GetUserID(cookie)
+	if userID == "error" {
+		w.WriteHeader(http.StatusUnauthorized)
+	}
+	err = a.Storage.Add(r.Context(), userID, code, url)
 	if errors.Is(err, storage.ErrURLAlreadyExist) {
 		temp = 1
 		w.WriteHeader(http.StatusConflict)
-		code, err = a.Storage.GetExist(url)
+		code, err = a.Storage.GetExist(r.Context(), url)
 		if err != nil {
 			log.Println(err)
 		}
 	}
 
-	fmt.Println(a.BaseURL)
+	//fmt.Println(a.BaseURL)
 	var resp string
 	if a.BaseURL != "" {
 		resp = a.BaseURL + "/" + code

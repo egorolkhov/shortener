@@ -26,7 +26,8 @@ func TestApp_DecodeURL(t *testing.T) {
 			name: "simple test",
 			fields: &storage.Data{
 				Urls:  map[string]string{"https://example.com": "cdFCblAL"},
-				Codes: map[string]string{"cdFCblAL": "https://example.com"}},
+				Codes: map[string]string{"cdFCblAL": "https://example.com"},
+				Users: map[string][]storage.URL{}},
 			want: want{
 				contentType: "text/plain",
 				statusCode:  307,
@@ -39,7 +40,8 @@ func TestApp_DecodeURL(t *testing.T) {
 			name: "wrong code",
 			fields: &storage.Data{
 				Urls:  map[string]string{"https://example.com": "cdFCblAL"},
-				Codes: map[string]string{"cdFCblAL": "https://example.com"}},
+				Codes: map[string]string{"cdFCblAL": "https://example.com"},
+				Users: map[string][]storage.URL{}},
 			want: want{
 				contentType: "text/plain; charset=utf-8",
 				statusCode:  400,
@@ -61,6 +63,9 @@ func TestApp_DecodeURL(t *testing.T) {
 			}
 
 			request = mux.SetURLVars(request, vars)
+
+			//middleware.Middleware(a.DecodeURL)(w, request)
+			w.Header().Set("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDEyMjMzNjEsIlVzZXJJRCI6IjQifQ.eruxblRFIyHVTtUkUQv5jkbJA3funWPDNb8m8zX-3ag")
 
 			a.DecodeURL(w, request)
 

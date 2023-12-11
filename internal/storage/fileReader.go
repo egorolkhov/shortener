@@ -2,6 +2,7 @@ package storage
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"os"
 )
@@ -23,7 +24,7 @@ func GetStorage(data Storage, filepath string) error {
 		fl := FileJSON{}
 		line := scanner.Bytes()
 		json.Unmarshal(line, &fl)
-		data.Add(fl.ShortURL, fl.OriginalURL)
+		data.Add(context.Background(), "-1", fl.ShortURL, fl.OriginalURL)
 	}
 	if err = scanner.Err(); err != nil {
 		return err

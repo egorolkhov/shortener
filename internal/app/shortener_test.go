@@ -22,11 +22,14 @@ func TestApp_ShortURL(t *testing.T) {
 		request string
 	}{
 		{
-			name:   "simple test",
-			fields: &storage.Data{Urls: map[string]string{}, Codes: map[string]string{}},
+			name: "simple test",
+			fields: &storage.Data{
+				Urls:  map[string]string{},
+				Codes: map[string]string{},
+				Users: map[string][]storage.URL{}},
 			want: want{
 				contentType: "text/plain",
-				statusCode:  201,
+				statusCode:  401,
 				storageSize: 1,
 				method:      http.MethodPost,
 			},
@@ -40,6 +43,9 @@ func TestApp_ShortURL(t *testing.T) {
 			request := httptest.NewRequest(tt.want.method, "/", nil)
 
 			w := httptest.NewRecorder()
+
+			//middleware.Middleware(a.ShortURL)(w, request)
+			w.Header().Set("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDEyMjMzNjEsIlVzZXJJRCI6IjQifQ.eruxblRFIyHVTtUkUQv5jkbJA3funWPDNb8m8zX-3ag")
 
 			a.ShortURL(w, request)
 
